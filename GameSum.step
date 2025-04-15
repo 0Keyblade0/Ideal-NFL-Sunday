@@ -1,0 +1,151 @@
+predicate SumVal ?val ?vteam ?vscore ?oteam ?oscore.
+SumVal ?val ? ? ? ?:
+    [= ?val 0]
+[end]
+SumVal ?val ?vteam ?vscore ?oteam ?oscore:
+    [= ?val 2]
+    [Safety ?vteam]
+    [NewLine]
+    [ScoreOrder ?vteam ?vscore ?oteam ?oscore]
+    [NewLine]
+    [NewLine]
+[end]
+SumVal ?val ?vteam ?vscore ?oteam ?oscore:
+    [= ?val 3]
+    [FG ?vteam]
+    [NewLine]
+    [ScoreOrder ?vteam ?vscore ?oteam ?oscore]
+    [NewLine]
+    [NewLine]
+[end]
+SumVal ?val ?vteam ?vscore ?oteam ?oscore:
+    [= ?val 6]
+    [TD ?vteam] and miss extra point.
+    [NewLine]
+    [ScoreOrder ?vteam ?vscore ?oteam ?oscore]
+    [NewLine]
+    [NewLine]
+[end]
+SumVal ?val ?vteam ?vscore ?oteam ?oscore:
+    [= ?val 7]
+    [TD ?vteam] and convert extra point attempt.
+    [NewLine]
+    [ScoreOrder ?vteam ?vscore ?oteam ?oscore]
+    [NewLine]
+    [NewLine]
+[end]
+SumVal ?val ?vteam ?vscore ?oteam ?oscore:
+    [= ?val 8]
+    [TD ?vteam] and convert 2-point attempt.
+    [NewLine]
+    [ScoreOrder ?vteam ?vscore ?oteam ?oscore]
+    [NewLine]
+    [NewLine]
+[end]
+
+[randomly]
+predicate TD ?team.
+[0.85] TD ?team:
+    [OTD ?team]
+[end]
+[0.15] TD ?team:
+    [DTD ?team]
+[end]
+
+[randomly]
+predicate DTD ?team.
+[0.55] DTD ?team:
+    [IntTD ?team]
+[end]
+[0.30] DTD ?team:
+    [FumbleTD ?team]
+[end]
+[0.10] DTD ?team:
+    [BlockTD ?team]
+[end]
+
+predicate IntTD ?team.
+IntTD ?team:
+    [TeamName ?team] score TD on pick six
+[end]
+
+predicate FumbleTD ?team.
+FumbleTD ?team:
+    [TeamName ?team] score TD on fumble six
+[end]
+
+[randomly]
+predicate BlockTD ?team.
+BlockTD ?team:
+    [TeamName ?team] score TD on blocked field goal
+[end]
+BlockTD ?team:
+    [TeamName ?team] score TD on blocked punt
+[end]
+
+[randomly]
+predicate OTD ?team.
+[0.40] OTD ?team:
+    [RunTD ?team]
+[end]
+[0.60] OTD ?team:
+    [PassTD ?team]
+[end]
+
+[randomly]
+predicate RunTD ?team.
+[0.75] RunTD ?team:
+    [TeamName ?team] score TD on short run
+[end]
+[0.15] RunTD ?team:
+    [TeamName ?team] score TD on run
+[end]
+[0.10] RunTD ?team:
+    [TeamName ?team] score TD on big run
+[end]
+
+[randomly]
+predicate PassTD ?team.
+[0.60] PassTD ?team:
+    [TeamName ?team] score TD on short pass
+[end]
+[0.30] PassTD ?team:
+    [TeamName ?team] score TD on pass
+[end]
+[0.10] PassTD ?team:
+    [TeamName ?team] score TD on long pass
+[end]
+
+[randomly]
+predicate FG ?team.
+[0.55] FG ?team:
+    [TeamName ?team] make short field goal.
+[end]
+[0.30] FG ?team:
+    [TeamName ?team] make field goal.
+[end]
+[0.15] FG ?team:
+    [TeamName ?team] make long field goal.
+[end]
+
+predicate Safety ?team.
+Safety ?team:
+    [TeamName ?team] force safety.
+[end]
+
+
+predicate ScoreOrder ?t1 ?t1s ?t2 ?t2s.
+ScoreOrder ?t1 ?t1s ?t2 ?t2s: 
+    [Game ? ?t1 ? ? ?]
+    Score: ?t2 ?t2s, ?t1 ?t1s
+[end]
+
+ScoreOrder ?t1 ?t1s ?t2 ?t2s: 
+    [Game ? ?t2 ? ? ?]
+    Score: ?t1 ?t1s, ?t2 ?t2s
+[end]
+
+predicate TeamName ?team.
+TeamName ?team: 
+    [Team ?team ? ? ? ?nn] ?nn
+[end]

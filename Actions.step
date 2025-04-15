@@ -1,0 +1,102 @@
+[main]
+# Makes new games
+predicate NewGame ?gameId.
+NewGame ?gameId: [Not [GameID ?gameId]] The gameID is not valid.
+NewGame ?gameId: 
+    [Team ?team1 ? ? ? ?] 
+    [Team ?team2 ? ? ? ?]
+    [NotAny [= ?team1 ?team2]]
+    [NotAny [Game ? ?team1 ? ? ?]]
+    [NotAny [Game ? ? ? ?team1 ?]]
+    [NotAny [Game ? ?team2 ? ? ?]]
+    [NotAny [Game ? ? ? ?team2 ?]]
+    [Team ?team1 ?location ?stadium ? ?]
+    [Game ?gameId ?home ?hscore ?away ?ascore]
+    [now [Not [Game ?gameId ?home ?hscore ?away ?ascore]]]
+    [now [Game ?gameId ?team1 null ?team2 null]]
+    ?gameId: ?team2 at ?team1
+    [NewLine]
+    Location: ?stadium, ?location
+    [NewLine]
+    [NewLine]
+[end]
+
+[main]
+predicate NextGames.
+NextGames: 
+    [NewGame game1]
+    [NewGame game2]
+    [NewGame game3]
+    [NewGame game4]
+    [NewGame game5]
+[end]
+
+[main]
+predicate ShowGame ?gameId.
+ShowGame ?_gameId: [Not [GameID ?_gameId]] The gameID is not valid.
+ShowGame ?_gameId:
+    [Game ?_gameId ?home ?score ?away ?]
+    [= ?score null]
+    [Team ?home ?location ?stadium ? ?]
+    ?_gameId: ?away at ?home 
+    [NewLine]
+    Location: ?stadium, ?location
+    [NewLine]
+    [NewLine]
+[end]
+ShowGame ?_gameId:
+    [Game ?_gameId ?home ?hscore ?away ?ascore]
+    [Team ?home ?location ?stadium ? ?]
+    ?_gameId Final: ?away ?ascore, ?home ?hscore
+    [NewLine]
+    Location: ?stadium, ?location
+    [NewLine]
+    [NewLine]
+[end]
+
+[main]
+predicate ShowGames.
+ShowGames: 
+    [ShowGame game1]
+    [ShowGame game2]
+    [ShowGame game3]
+    [ShowGame game4]
+    [ShowGame game5]
+[end]
+
+[main]
+predicate SumGame ?gameId.
+SumGame ?gameId: [Not [GameID ?gameId]] The gameID is not valid.
+SumGame ?gameId: 
+    [Game ?gameId ? ?hscore ? ?]
+    [Not [= ?hscore null]]
+    ?gameId game has already been played. Check score using ShowGame or ShowGames.
+    [NewLine]
+    [NewLine]
+[end]
+SumGame ?gameId: 
+    [Game ?gameId ?home ?hscore ?away ?ascore]
+    ?gameId Scoring Summary: ?away at ?home
+    [NewLine]
+    [NewLine]
+    [Possessions ?possHome][Possessions ?possAway]
+    [ScoreSum ?home ?possHome 0 ?away ?possAway 0]
+    [now [Not [Game ?gameId ?home ?hscore ?away ?ascore]]]
+    [now [Game ?gameId ?home ScoreHome ?away ScoreAway]]
+    ?gameId Final: ?away [Write ScoreAway], ?home [Write ScoreHome]
+    [NewLine]
+    [NewLine]
+[end]
+
+[main]
+predicate SumGames.
+SumGames: 
+    [SumGame game1]
+    [SumGame game2]
+    [SumGame game3]
+    [SumGame game4]
+    [SumGame game5]
+[end]
+
+
+
