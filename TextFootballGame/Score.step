@@ -1,0 +1,55 @@
+# Weighted scores of NFL scoring plays
+[randomly]
+predicate ScoreValues ?val.
+[0.025] ScoreValues 8.
+[0.30] ScoreValues 7.
+[0.015] ScoreValues 6.
+[0.10] ScoreValues 3.
+[0.01] ScoreValues 2.
+[0.55] ScoreValues 0.
+
+# Weighted number of NFL possesions per game
+[randomly]
+predicate Possessions ?num.
+[0.125] Possessions 10.
+[0.325] Possessions 11.
+[0.325] Possessions 12.
+[0.125] Possessions 13.
+[0.10] Possessions 14.
+
+# Given a number of possessions and an initial score calc final score
+predicate ScoreSum ?hteam ?hposs ?hscore ?ateam ?aposs ?ascore.
+ScoreSum ? ?hposs ?hscore ? ?aposs ?ascore: 
+    [= ?hposs 0] 
+    [= ?aposs 0] 
+    [set ScoreHome = ?hscore] 
+    [set ScoreAway = ?ascore]
+[end]
+ScoreSum ?hteam ?hposs ?hscore ?ateam ?aposs ?ascore:
+    [Not [= ?hposs 0]] 
+    [Not [= ?aposs 0]]           
+    [ScoreValues ?hval]
+    [set HTotalScore = ?hscore + ?hval]
+    [set HTotalPoss = ?hposs - 1]
+    [SumVal ?hval ?hteam HTotalScore ?ateam ?ascore]
+    [ScoreValues ?aval]
+    [set ATotalScore = ?ascore + ?aval]
+    [set ATotalPoss = ?aposs - 1]
+    [SumVal ?aval ?ateam ATotalScore ?hteam HTotalScore]
+    [ScoreSum ?hteam HTotalPoss HTotalScore ?ateam ATotalPoss ATotalScore]
+[end]
+ScoreSum ?hteam ?hposs ?hscore ?ateam ?aposs ?ascore:
+    [= ?aposs 0] 
+    [ScoreValues ?hval]
+    [set HTotalScore = ?hscore + ?hval]
+    [set HTotalPoss = ?hposs - 1]
+    [SumVal ?hval ?hteam HTotalScore ?ateam ?ascore]
+    [ScoreSum ?hteam HTotalPoss HTotalScore ?ateam ?aposs ?ascore]
+[end]
+ScoreSum ?hteam ?hposs ?hscore ?ateam ?aposs ?ascore:
+    [= ?hposs 0] 
+    [ScoreValues ?aval]
+    [set ATotalScore = ?ascore + ?aval]
+    [set ATotalPoss = ?aposs - 1]
+    [SumVal ?aval ?ateam ATotalScore ?hteam ?hscore]
+    [ScoreSum ?hteam ?hposs ?hscore ?ateam ATotalPoss ATotalScore]
